@@ -16,7 +16,7 @@ INPUT_2_DESC="DP"       # Optional: Give input a name
 
 # Optional Options for ddcutil. Enabling this option can *dramatically* speed up the script, if your monitor can handle it.
 # Find your monitor's bus ID by running 'ddcutil detect'. Look out for '/dev/i2c-YOUR_ID'
-#DDCUTIL_OPTIONS="--skip-ddc-checks --noverify --bus 13"
+#DDCUTIL_OPTIONS="--skip-ddc-checks --noverify --bus 13"    # You can show diagnostic info by adding '--stats'
 
 
 # Begin
