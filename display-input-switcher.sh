@@ -14,7 +14,10 @@ INPUT_1_DESC="USB-C"    # Optional: Give input a name
 INPUT_2="0f"            # In Hex
 INPUT_2_DESC="DP"       # Optional: Give input a name
 
-# Optional Options for ddcutil. Enabling this option can *dramatically* speed up the script, if your monitor can handle it.
+# Optional setting to switch to a default input if an unconfigured input was detected.
+#DEFAULT_INPUT=$INPUT_1
+
+# Optional parameters for ddcutil. Enabling this option can *dramatically* speed up the script, if your monitor can handle it.
 # Find your monitor's bus ID by running 'ddcutil detect'. Look out for '/dev/i2c-YOUR_ID'
 #DDCUTIL_OPTIONS="--skip-ddc-checks --noverify --bus 13"    # You can show diagnostic info by adding '--stats'
 
@@ -22,7 +25,7 @@ INPUT_2_DESC="DP"       # Optional: Give input a name
 # Begin
 : ${DDCUTIL_OPTIONS:=""} # Set variable to nothing if disabled above
 
-echo "Display Input Switcher v1.0"
+echo "Display Input Switcher v1.1"
 echo "Getting current input..."
 
 # Get current input
@@ -44,6 +47,12 @@ elif [ "$CURRENT_ID" == "$INPUT_2" ]; then
 
     NEW_INPUT_DECIMAL=$(echo $((0x$INPUT_1)))
     NEW_INPUT_DESC="$INPUT_1_DESC - ID: $NEW_INPUT_DECIMAL (0x$INPUT_1)"
+
+elif [ ! "$DEFAULT_INPUT" == "" ]; then
+    OLD_INPUT_DESC="Unknown input '$CURRENT_NAME' ($CURRENT_ID)"
+
+    NEW_INPUT_DECIMAL=$(echo $((0x$DEFAULT_INPUT)))
+    NEW_INPUT_DESC="Default - ID: $NEW_INPUT_DECIMAL (0x$DEFAULT_INPUT)"
 
 else
     echo "Current input '$CURRENT_NAME' ($CURRENT_ID) not recognized! Exiting..."

@@ -30,6 +30,9 @@ Your supported inputs are listed right below. Find the two you want to switch be
 Set both values (they are in hex) in the script at INPUT_1 & 2.  
 You may set a description for both inputs to make the script's output more readable.
 
+Lastly, if you are sometimes using a third input, you can configure the script to switch to a default input instead of failing instead.  
+Uncomment the optional setting 'DEFAULT_INPUT' and set it to one of the configured inputs.
+
 &nbsp;
 
 ## Optimizing performance
@@ -54,8 +57,13 @@ Click + and add a script/command. Select the location of the script in the file 
 Whenever you now hit the hotkey, KDE will launch the script in the background, which will switch your inputs around.
 
 **Hyprland**  
-Open your Hyprland configuration file at '~/.config/hypr/hyprland' in a text editor.  
+For Hyprland, open your configuration file at '~/.config/hypr/hyprland' in a text editor.  
 Add a bind: In this case I chose <kbd>ALT</kbd>+<kbd>G</kbd> and the script is in my home directory:
 ```
 bind = ALT, G, exec, ~/display-input-switcher.sh
 ```
+Upon pressing the hotkey, hyprland will launch the script in the background.
+
+&nbsp;
+
+Be warned that this will hide any logs. Should nothing happen when pressing the hotkey, run the script manually in a terminal to verify where the issue is coming from.
