@@ -25,13 +25,13 @@ Open a PowerShell in the same folder and run `winddcutil.exe detect` to check if
 
 ## 📝 Configuration
 Clone the repository and copy the appropiate script to e.g. your home directory.  
-On Linux you need the '.sh' bash script and on Windows the '.bat' batch script.
+On Linux you need the '...-linux.sh' bash script and on Windows the '...-windows.bat' batch script.
 
 ### Linux:
 <details>
 <summary>Click to unfold</summary>
 
-Make the script executable: `chmod +x ./display-input-switcher.sh`
+Make the script executable: `chmod +x ./display-input-switcher-linux.sh`
 
 Open the script using a text editor.  
 Open a terminal and run the command `ddcutil detect`.
@@ -105,7 +105,7 @@ Whenever you now hit the hotkey, KDE will launch the script in the background, w
 For Hyprland, open your configuration file at '~/.config/hypr/hyprland' in a text editor.  
 Add a bind: In this case I chose <kbd>ALT</kbd>+<kbd>G</kbd> and the script is in my home directory:
 ```
-bind = ALT, G, exec, ~/display-input-switcher.sh
+bind = ALT, G, exec, ~/display-input-switcher-linux.sh
 ```
 Upon pressing the hotkey, hyprland will launch the script in the background.
 
