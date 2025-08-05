@@ -1,35 +1,42 @@
 #!/bin/bash
 
-# display-input-switcher by 3urobeat
-# https://github.com/3urobeat/display-input-switcher-linux
+
+# display-input-switcher for Linux by 3urobeat
+# https://github.com/3urobeat/display-input-switcher
 # Licensed under MIT
 
 
-# Run 'ddcutil capabilities' to get the values for your display
 
-# Set the 'Input Source' Feature Code and the two inputs to switch between below.
+# Run 'ddcutil detect' to find your monitor and 'ddcutil capabilities' to get the values for your display
+
+# Set the monitor ID to switch inputs for
+MONITOR_ID="13"
+# 'Input Source' feature code in Hex
 INPUT_CODE="60"
-INPUT_1="1b"            # In Hex
-INPUT_1_DESC="USB-C"    # Optional: Give input a name
-INPUT_2="0f"            # In Hex
-INPUT_2_DESC="DP"       # Optional: Give input a name
+# First input to switch between, in Hex
+INPUT_1="1b"
+# Optional: Give input a name
+INPUT_1_DESC="USB-C"
+# Second input to switch between, in Hex
+INPUT_2="0f"
+# Optional: Give input a name
+INPUT_2_DESC="DP"
 
 # Optional setting to switch to a default input if an unconfigured input was detected.
 #DEFAULT_INPUT=$INPUT_1
 
 # Optional parameters for ddcutil. Enabling this option can *dramatically* speed up the script, if your monitor can handle it.
-# Find your monitor's bus ID by running 'ddcutil detect'. Look out for '/dev/i2c-YOUR_ID'
-#DDCUTIL_OPTIONS="--skip-ddc-checks --noverify --bus 13"    # You can show diagnostic info by adding '--stats'
+#DDCUTIL_OPTIONS="--skip-ddc-checks --noverify"    # You can show diagnostic info by adding '--stats'
 
 
 # Begin
 : ${DDCUTIL_OPTIONS:=""} # Set variable to nothing if disabled above
 
-echo "Display Input Switcher v1.1"
+echo "Display Input Switcher v1.1 for Linux by 3urobeat"
 echo "Getting current input..."
 
 # Get current input
-CURRENT=$(ddcutil getvcp $DDCUTIL_OPTIONS $INPUT_CODE) || { echo "Failed to get current input! Exiting..."; exit 1; }
+CURRENT=$(ddcutil getvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE) || { echo "Failed to get current input! Exiting..."; exit 1; }
 
 # Get current input name and ID '(sl=0xINPUT_ID)' by using awk to split the string and sed to remove the trailing bracket
 CURRENT_NAME=$(echo $CURRENT | awk -F ': ' '{print $2}')
@@ -63,7 +70,7 @@ echo "Current input: $OLD_INPUT_DESC"
 echo "Switching to input: $NEW_INPUT_DESC"
 
 # Run switch command
-ddcutil setvcp $DDCUTIL_OPTIONS $INPUT_CODE $NEW_INPUT_DECIMAL || { echo "Failed to switch!"; exit 1; }
+ddcutil setvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE $NEW_INPUT_DECIMAL || { echo "Failed to switch!"; exit 1; }
 
 echo "Done!"
 exit 0
