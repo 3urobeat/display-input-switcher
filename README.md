@@ -11,6 +11,7 @@ Support for **Linux** (Bash script '.sh') & **Windows** 10 (Batch script '.bat')
 
 ## 🔍 Prerequisites
 Your display needs to support DDC/CI and expose the feature to select an input.  
+*Most* modern monitors do this.
 
 ### Linux:  
 You need to have 'ddcutil' installed. Load the kernel module with `sudo modprobe i2c-dev` or reboot your computer after installing it.  
@@ -76,6 +77,9 @@ Uncomment the optional setting 'DEFAULT_INPUT' and set it to one of the configur
 
 </details>
 
+> [!NOTE]
+> If 'Input Source' 0x60 is not working for you, check out [this resource](https://github.com/rockowitz/ddcutil/wiki).
+
 &nbsp;
 
 ## 🚀 Optimizing performance (Linux only)
@@ -115,8 +119,32 @@ Upon pressing the hotkey, hyprland will launch the script in the background.
 ### Windows:
 Right click the script in your file explorer, and click on 'Create shortcut'.  
 Right click the created shortcut, select Properties.  
-Set a hotkey in the key combination field. You may set it to run as minimized as well.  
+Set a hotkey in the 'Shortcut key' field. You may set it to run as minimized as well.  
 Save.
 
 When pressing the hotkey, a command window should now pop up (or show up minimized) and switch your input after ~1 second.  
 > When pressing the hotkey for the first time, you may see a "Run this script?" popup. Uncheck the checkbox "Always ask" and hit run.
+
+&nbsp;
+
+## 🖥️-🖥️ Switching multiple monitors
+Switching multiple monitors at the same time is not supported by the scripts directly but we can use a little workaround.  
+Make sure you have followed the 'Setting a hotkey' section above.
+
+Duplicate the script and rename them to 'display-input-switcher-linux-display1' and 'display-input-switcher-linux-display2' for example.
+
+### Linux:
+Again, DE/WM dependent.  
+Simply change the path in your hotkey configuration to run both scripts at the same time:  
+`/path/to/display-input-switcher-linux-display1.sh & /path/to/display-input-switcher-linux-display2.sh`
+
+On KDE you can click the pen symbol in the list beside the entry you have created. A popup will appear, allowing you to edit the command.  
+On Hyprland, simply edit the command being executed in your config file.
+
+### Windows:
+Since Windows is a little *special*, you need a workaround for the workaround:
+- Create another text file, call it 'display-input-switcher-windows.bat'. Make sure it does not end with .txt anymore.
+- Right click it, Edit
+- Paste (after editing '\path\to\'): `start C:\path\to\display-input-switcher-windows-display1.bat && C:\path\to\display-input-switcher-windows-display2.bat`
+- Save
+- Delete your old shortcut and create a new one for this file as described in the step above
