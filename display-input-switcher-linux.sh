@@ -42,24 +42,24 @@ CURRENT=$(ddcutil getvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE) || { ec
 CURRENT_NAME=$(echo $CURRENT | awk -F ': ' '{print $2}')
 CURRENT_ID=$(echo $CURRENT_NAME | awk -F 'sl=0x' '{print $2}' | sed "s/)//")
 
-# Decide which input to switch to, convert ID for ddcutil to decimal and prepare text for log messages
+# Decide which input to switch to and prepare text for log messages
 if [ "$CURRENT_ID" == "$INPUT_1" ]; then
     OLD_INPUT_DESC="$INPUT_1_DESC - ID: 0x$INPUT_1"
 
-    NEW_INPUT_DECIMAL=$(echo $((0x$INPUT_2)))
-    NEW_INPUT_DESC="$INPUT_2_DESC - ID: $NEW_INPUT_DECIMAL (0x$INPUT_2)"
+    NEW_INPUT=0x$INPUT_2
+    NEW_INPUT_DESC="$INPUT_2_DESC - ID: $NEW_INPUT ($INPUT_2)"
 
 elif [ "$CURRENT_ID" == "$INPUT_2" ]; then
-    OLD_INPUT_DESC="$INPUT_2_DESC - ID: 0x$INPUT_2"
+    OLD_INPUT_DESC="$INPUT_2_DESC - ID: $INPUT_2"
 
-    NEW_INPUT_DECIMAL=$(echo $((0x$INPUT_1)))
-    NEW_INPUT_DESC="$INPUT_1_DESC - ID: $NEW_INPUT_DECIMAL (0x$INPUT_1)"
+    NEW_INPUT=0x$INPUT_1
+    NEW_INPUT_DESC="$INPUT_1_DESC - ID: $NEW_INPUT ($INPUT_1)"
 
 elif [ ! "$DEFAULT_INPUT" == "" ]; then
     OLD_INPUT_DESC="Unknown input '$CURRENT_NAME' ($CURRENT_ID)"
 
-    NEW_INPUT_DECIMAL=$(echo $((0x$DEFAULT_INPUT)))
-    NEW_INPUT_DESC="Default - ID: $NEW_INPUT_DECIMAL (0x$DEFAULT_INPUT)"
+    NEW_INPUT=0x$DEFAULT_INPUT
+    NEW_INPUT_DESC="Default - ID: $NEW_INPUT ($DEFAULT_INPUT)"
 
 else
     echo "Current input '$CURRENT_NAME' ($CURRENT_ID) not recognized! Exiting..."
@@ -70,7 +70,7 @@ echo "Current input: $OLD_INPUT_DESC"
 echo "Switching to input: $NEW_INPUT_DESC"
 
 # Run switch command
-ddcutil setvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE $NEW_INPUT_DECIMAL || { echo "Failed to switch!"; exit 1; }
+ddcutil setvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE $NEW_INPUT || { echo "Failed to switch!"; exit 1; }
 
 echo "Done!"
 exit 0
