@@ -1,5 +1,5 @@
 @ECHO OFF
-SETLOCAL
+SETLOCAL enabledelayedexpansion
 SET PARENT=%~dp0
 
 
@@ -44,19 +44,19 @@ set /A INPUT_2_DECIMAL=0xF%INPUT_2%
 IF "%CURRENT%" == "%INPUT_1_DECIMAL%" (
     SET OLD_INPUT_DESC=%INPUT_1_DESC% - ID: %INPUT_1%
 
-    SET NEW_INPUT=%INPUT_2%
-    SET NEW_INPUT_DESC=%INPUT_2_DESC% - ID: %INPUT_2%
+    SET NEW_INPUT=0x%INPUT_2%
+    SET NEW_INPUT_DESC=%INPUT_2_DESC% - ID: !NEW_INPUT!
 ) ELSE IF "%CURRENT%" == "%INPUT_2_DECIMAL%" (
     SET OLD_INPUT_DESC=%INPUT_2_DESC% - ID: %INPUT_2%
 
-    SET NEW_INPUT=%INPUT_1%
-    SET NEW_INPUT_DESC=%INPUT_1_DESC% - ID: %INPUT_1%
+    SET NEW_INPUT=0x%INPUT_1%
+    SET NEW_INPUT_DESC=%INPUT_1_DESC% - ID: !NEW_INPUT!
 
 ) ELSE IF NOT "%DEFAULT_INPUT%" == "" (
     SET OLD_INPUT_DESC=Unknown input '%CURRENT%'
 
-    SET NEW_INPUT=%DEFAULT_INPUT%
-    SET NEW_INPUT_DESC=Default - ID: %DEFAULT_INPUT%
+    SET NEW_INPUT=0x%DEFAULT_INPUT%
+    SET NEW_INPUT_DESC=Default - ID: !NEW_INPUT!
 
 ) ELSE (
     echo Current input '%CURRENT%' not recognized! Exiting...
@@ -67,6 +67,6 @@ echo Current input: %OLD_INPUT_DESC%
 echo Switching to input: %NEW_INPUT_DESC%
 
 :: Run switch command
-%parent%winddcutil.exe setvcp %MONITOR_ID:"=% 0x%INPUT_CODE:"=% 0x%NEW_INPUT:"=% || (echo Failed to switch! && exit 1)
+%parent%winddcutil.exe setvcp %MONITOR_ID:"=% 0x%INPUT_CODE:"=% %NEW_INPUT:"=% || (echo Failed to switch! && exit 1)
 
 echo Done!
