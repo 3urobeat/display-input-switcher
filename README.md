@@ -61,7 +61,7 @@ Your supported inputs are listed right below. Find the two you want to switch be
 Set both values (they are in hex) in the script at INPUT_1 & 2.  
 You may set a description for both inputs to make the script's output more readable.
 
-> [!TIP]
+**Tip:**  
 > If you always only switch away to one input from this system, you can leave INPUT_2 empty.  
 > This will skip getting the currently selected input to determine which input to switch to and directly switch to INPUT_1, saving you some time.
 
@@ -88,7 +88,7 @@ Which is which? Well, we again don't know. Awesome! Run `.\winddcutil.exe setvcp
 Set both values (they are in hex) in the script at INPUT_1 & 2.  
 You may set a description for both inputs to make the script's output more readable.
 
-> [!TIP]
+**Tip:**  
 > If you always only switch away to one input from this system, you can leave INPUT_2 empty.  
 > This will skip getting the currently selected input to determine which input to switch to and directly switch to INPUT_1, saving you some time.
 
@@ -108,11 +108,9 @@ Uncomment the optional setting 'DEFAULT_INPUT' and set it to one of the configur
 
 ## 🚀 Optimizing performance (Linux only)
 With the current configuration ddcutil does a lot of extra checking & waiting which takes some time.  
-If your monitor can handle it, you can disable these checks and in my case reduce the time to switch from 3s to just ~500ms.  
-I can only recommend you to try it out - it drastically improved the user experience for me.
+If your monitor can handle it, you can disable these checks and in my case reduce the time to switch from 3s to just ~500ms. This drastically improves the user experience.
 
-Run the command `ddcutil detect`, find your display and look out for '/dev/i2c-YOUR_ID'.  
-In the script, uncomment the variable 'DDCUTIL_OPTIONS' and set YOUR_ID at '--bus YOUR_ID'.
+To disable these checks, uncomment the variable 'DDCUTIL_OPTIONS' in the script.
 
 Should you notice failed switches, for example due to ddcutil failing to read/write, disable this option again.  
 You can also attempt to diagnose issues by adding '--stats' to the 'DDCUTIL_OPTIONS' variable. This will tell ddcutil to print execution details for each request.
