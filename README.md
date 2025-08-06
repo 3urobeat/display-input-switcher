@@ -1,13 +1,24 @@
 # display-input-switcher
 Scripts to quickly switch between two inputs of one of your connected displays.
 
-Using two computers on one display with a built in KVM is awesome!  
+Using two computers on a display with a built in KVM is awesome!  
 ...but it quickly becomes cumbersome when you have to navigate the OSD to switch between them.  
 The script, optimally bound to a hotkey, does this for you in 1 second!  
 
 Support for **Linux** (Bash script '.sh') & **Windows** 10 (Batch script '.bat').
 
 &nbsp;
+
+**Contents:**
+- [Prerequisites](#prerequisites)
+- [Configuration](#configuration)
+- [Optimizing performance (Linux only)](#optimizing-performance)
+- [Setting a hotkey](#hotkey)
+- [Switching multiple monitors](#multiple-monitors)
+
+&nbsp;
+
+<a id="prerequisites"></a>
 
 ## 🔍 Prerequisites
 Your display needs to support DDC/CI and expose the feature to select an input.  
@@ -24,9 +35,10 @@ Open a PowerShell in the same folder and run `winddcutil.exe detect` to check if
 
 &nbsp;
 
+<a id="configuration"></a>
+
 ## 📝 Configuration
-Clone the repository and copy the appropiate script to e.g. your home directory.  
-On Linux you need the '...-linux.sh' bash script and on Windows the '...-windows.bat' batch script.
+[Download](https://github.com/3urobeat/display-input-switcher/releases/latest) the appropiate script for your operating system and copy it to e.g. your home directory.
 
 ### Linux:
 <details>
@@ -48,6 +60,10 @@ Set the ID, usually 60, in the script at 'INPUT_CODE'.
 Your supported inputs are listed right below. Find the two you want to switch between.  
 Set both values (they are in hex) in the script at INPUT_1 & 2.  
 You may set a description for both inputs to make the script's output more readable.
+
+> [!TIP]
+> If you always only switch away to one input from this system, you can leave INPUT_2 empty.  
+> This will skip getting the currently selected input to determine which input to switch to and directly switch to INPUT_1, saving you some time.
 
 Lastly, if you are sometimes using a third input, you can configure the script to switch to a default input instead of failing.  
 Uncomment the optional setting 'DEFAULT_INPUT' and set it to one of the configured inputs.
@@ -72,15 +88,23 @@ Which is which? Well, we again don't know. Awesome! Run `.\winddcutil.exe setvcp
 Set both values (they are in hex) in the script at INPUT_1 & 2.  
 You may set a description for both inputs to make the script's output more readable.
 
+> [!TIP]
+> If you always only switch away to one input from this system, you can leave INPUT_2 empty.  
+> This will skip getting the currently selected input to determine which input to switch to and directly switch to INPUT_1, saving you some time.
+
 Lastly, if you are sometimes using a third input, you can configure the script to switch to a default input instead of failing.  
 Uncomment the optional setting 'DEFAULT_INPUT' and set it to one of the configured inputs.
 
 </details>
 
+</br>
+
 > [!NOTE]
-> If 'Input Source' 0x60 is not working for you, check out [this resource](https://github.com/rockowitz/ddcutil/wiki).
+> If 'Input Source' 0x60 is not working for you, check out [this resource](https://github.com/rockowitz/ddcutil/wiki) for monitor/manufacturer specific information.
 
 &nbsp;
+
+<a id="optimizing-performance"></a>
 
 ## 🚀 Optimizing performance (Linux only)
 With the current configuration ddcutil does a lot of extra checking & waiting which takes some time.  
@@ -94,6 +118,8 @@ Should you notice failed switches, for example due to ddcutil failing to read/wr
 You can also attempt to diagnose issues by adding '--stats' to the 'DDCUTIL_OPTIONS' variable. This will tell ddcutil to print execution details for each request.
 
 &nbsp;
+
+<a id="hotkey"></a>
 
 ## ⌨ Setting a hotkey
 
@@ -117,6 +143,18 @@ Upon pressing the hotkey, hyprland will launch the script in the background.
 > Be warned that this will hide any logs. Should nothing happen when pressing the hotkey, run the script manually in a terminal to verify where the issue is coming from.
 
 ### Windows:
+**Method 1 (PowerToys, better):**  
+If you have [Microsoft PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) installed, you can set global hotkeys just like in Linux :D  
+
+Open the PowerToys settings and go to the Keyboard Manager menu.  
+Click on "Remap a shortcut" and in the popup on "Add key remapping".  
+Input your desired hotkey and select "Start App" in the "To send:" column drop down.  
+Select the bat script, then save.
+
+**Method 2 (native, worse):**  
+If you don't have access to PowerToys, you can try the native approach.  
+This is sadly slower, limited to <kbd>CTRL</kbd>+<kbd>ALT</kbd>+... keybinds & buggier sometimes.
+
 Right click the script in your file explorer, and click on 'Create shortcut'.  
 Right click the created shortcut, select Properties.  
 Set a hotkey in the 'Shortcut key' field. You may set it to run as minimized as well.  
@@ -126,6 +164,8 @@ When pressing the hotkey, a command window should now pop up (or show up minimiz
 > When pressing the hotkey for the first time, you may see a "Run this script?" popup. Uncheck the checkbox "Always ask" and hit run.
 
 &nbsp;
+
+<a id="multiple-monitors"></a>
 
 ## 🖥️-🖥️ Switching multiple monitors
 Switching multiple monitors at the same time is not supported by the scripts directly but we can use a little workaround.  
