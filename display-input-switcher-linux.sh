@@ -17,7 +17,7 @@ INPUT_CODE="60"
 INPUT_1="1b"
 # Optional: Give input a name
 INPUT_1_DESC="USB-C"
-# Second input to switch between, in Hex
+# Second input to switch between, in Hex. Leave this empty to always switch to Input 1, without checking.
 INPUT_2="0f"
 # Optional: Give input a name
 INPUT_2_DESC="DP"
@@ -32,15 +32,22 @@ INPUT_2_DESC="DP"
 # Begin
 : ${DDCUTIL_OPTIONS:=""} # Set variable to nothing if disabled above
 
-echo "Display Input Switcher v1.1 for Linux by 3urobeat"
-echo "Getting current input..."
+echo "Display Input Switcher v1.2 for Linux by 3urobeat"
 
 # Get current input
-CURRENT=$(ddcutil getvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE) || { echo "Failed to get current input! Exiting..."; exit 1; }
+if [ ! "$INPUT_2" == "" ]; then
+    echo "Getting current input..."
+    CURRENT=$(ddcutil getvcp --bus $MONITOR_ID $DDCUTIL_OPTIONS $INPUT_CODE) || { echo "Failed to get current input! Exiting..."; exit 1; }
 
-# Get current input name and ID '(sl=0xINPUT_ID)' by using awk to split the string and sed to remove the trailing bracket
-CURRENT_NAME=$(echo $CURRENT | awk -F ': ' '{print $2}')
-CURRENT_ID=$(echo $CURRENT_NAME | awk -F 'sl=0x' '{print $2}' | sed "s/)//")
+    # Get current input name and ID '(sl=0xINPUT_ID)' by using awk to split the string and sed to remove the trailing bracket
+    CURRENT_NAME=$(echo $CURRENT | awk -F ': ' '{print $2}')
+    CURRENT_ID=$(echo $CURRENT_NAME | awk -F 'sl=0x' '{print $2}' | sed "s/)//")
+else
+    CURRENT_NAME="Unknown"
+    CURRENT_ID="-1"
+    DEFAULT_INPUT=$INPUT_1
+fi
+
 
 # Decide which input to switch to and prepare text for log messages
 if [ "$CURRENT_ID" == "$INPUT_1" ]; then

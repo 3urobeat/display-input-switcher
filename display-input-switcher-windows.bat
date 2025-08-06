@@ -18,7 +18,7 @@ SET INPUT_CODE=60
 SET INPUT_1=1b
 :: Optional: Give input a name
 SET INPUT_1_DESC=USB-C
-:: Second input to switch between, in Hex
+:: Second input to switch between, in Hex. Leave this empty to always switch to Input 1, without checking.
 SET INPUT_2=0f
 :: Optional: Give input a name
 SET INPUT_2_DESC=DP
@@ -28,17 +28,24 @@ SET INPUT_2_DESC=DP
 
 
 :: Begin
-echo Display Input Switcher v1.1 for Windows by 3urobeat
-echo Getting current input...
+echo Display Input Switcher v1.2 for Windows by 3urobeat
 
 :: Get current input
-FOR /F "tokens=3" %%g IN ('%parent%\winddcutil.exe getvcp %MONITOR_ID:"=% 0x%INPUT_CODE:"=%') do (SET CURRENT=%%g)
+IF NOT "%INPUT_2%" == "" (
+    echo Getting current input...
+    FOR /F "tokens=3" %%g IN ('%parent%\winddcutil.exe getvcp %MONITOR_ID:"=% 0x%INPUT_CODE:"=%') do (SET CURRENT=%%g)
 
-IF %errorlevel% NEQ 0 (echo Failed to get current input! Exiting... && exit 1)
-IF "%CURRENT%" == "" (echo Failed to get current input! Exiting... && exit 1)
+    IF %errorlevel% NEQ 0 (echo Failed to get current input! Exiting... && exit 1)
+    IF "%CURRENT%" == "" (echo Failed to get current input! Exiting... && exit 1)
 
-set /A INPUT_1_DECIMAL=0xF%INPUT_1%
-set /A INPUT_2_DECIMAL=0xF%INPUT_2%
+    SET /A INPUT_2_DECIMAL=0xF%INPUT_2%
+) ELSE (
+    SET CURRENT=Unknown
+    SET INPUT_2_DECIMAL=-1
+    SET DEFAULT_INPUT=%INPUT_1%
+)
+
+SET /A INPUT_1_DECIMAL=0xF%INPUT_1%
 
 :: Decide which input to switch to and prepare text for log messages
 IF "%CURRENT%" == "%INPUT_1_DECIMAL%" (
